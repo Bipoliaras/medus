@@ -41,7 +41,7 @@ PUT  | /billable-services/{id} | Update billable service by id |
 
 Method  | Path | Explanation
 ------------- | ------------- | ------------- |
-GET  | /phone-numbers | Get phone number by id  |
+GET  | /phone-numbers/{id} | Get phone number by id  |
 GET  | /phone-numbers | Get all phone numbers  |
 PUT  | /phone-numbers/{phoneId}/services/{serviceId}/order | Order service for number|
 PUT  | /phone-numbers/{phoneId}/services/{serviceId} | Update ordered service for number  |
