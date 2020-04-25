@@ -1,4 +1,4 @@
-package com.ernestas.medus.entities;
+package com.ernestas.medus.entities.customer;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

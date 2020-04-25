@@ -1,12 +1,16 @@
-package com.ernestas.medus.entities;
+package com.ernestas.medus.entities.orderedservice;
 
+import com.ernestas.medus.entities.phonenumber.PhoneNumber;
+import com.ernestas.medus.entities.service.BillableService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,10 +32,17 @@ public class OrderedService {
   @JsonIgnore
   private PhoneNumber phoneNumber;
 
-  public String name;
+  @NotNull @Size(min = 6, max = 20)
+  private String name;
 
-  public Date activeFrom;
+  @NotNull
+  private LocalDateTime activeFrom;
 
-  public Date activeTo;
+  @NotNull
+  private LocalDateTime activeTo;
+
+  @ManyToOne
+  private BillableService billableService;
+
 
 }

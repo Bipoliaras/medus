@@ -1,23 +1,50 @@
 package com.ernestas.medus.services;
 
-import com.ernestas.medus.entities.Account;
-import com.ernestas.medus.entities.AccountRepository;
-import com.ernestas.medus.entities.Customer;
-import com.ernestas.medus.entities.CustomerRepository;
+import com.ernestas.medus.entities.account.Account;
+import com.ernestas.medus.entities.account.AccountCreate;
+import com.ernestas.medus.entities.account.AccountRepository;
+import com.ernestas.medus.entities.customer.Customer;
+import com.ernestas.medus.entities.customer.CustomerCreate;
+import com.ernestas.medus.entities.customer.CustomerRepository;
+import com.ernestas.medus.entities.customer.CustomerUpdate;
+import com.ernestas.medus.error.NotFoundException;
+import com.ernestas.medus.validators.PersonalCodeValidator;
 import java.util.List;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CustomerService {
 
+  @Autowired
+  public CustomerService(CustomerRepository customerRepository,
+      AccountRepository accountRepository, PersonalCodeValidator personalCodeValidator) {
+    this.customerRepository = customerRepository;
+    this.accountRepository = accountRepository;
+    this.personalCodeValidator = personalCodeValidator;
+  }
 
   private CustomerRepository customerRepository;
 
   private AccountRepository accountRepository;
 
-  public void createCustomer(Customer customer) {
-    customerRepository.save(customer);
+  private PersonalCodeValidator personalCodeValidator;
+
+  @Transactional
+  public void createCustomer(CustomerCreate customerCreate) {
+
+    personalCodeValidator.validate(customerCreate.getPersonalCode());
+
+    customerRepository.saveAndFlush(
+        Customer.builder()
+            .name(customerCreate.getName())
+            .surname(customerCreate.getSurname())
+            .personalCode(customerCreate.getPersonalCode())
+            .companyName(customerCreate.getCompanyName())
+            .companyCode(customerCreate.getCompanyCode())
+            .build()
+    );
   }
 
   public List<Customer> getAllCustomers() {
@@ -25,36 +52,54 @@ public class CustomerService {
   }
 
   public Customer getCustomerById(Long id) {
-    return customerRepository.findById(id).get();
+    return customerRepository.findById(id).orElseThrow(() -> new NotFoundException(
+        "Customer not found"));
   }
 
-  public void updateCustomer(Long id, Customer customer) {
+  @Transactional
+  public void updateCustomer(Long id, CustomerUpdate customerUpdate) {
 
-    Customer currentCustomer = customerRepository.findById(id).get();
+    personalCodeValidator.validate(customerUpdate.getPersonalCode());
 
-    currentCustomer.setCompanyCode(customer.getCompanyCode());
-    currentCustomer.setCompanyName(customer.getCompanyName());
-    currentCustomer.setName(customer.getName());
-    currentCustomer.setSurname(customer.getSurname());
-    currentCustomer.setPersonalCode(customer.getPersonalCode());
+    Customer currentCustomer = customerRepository.findById(id).orElseThrow(
+        () -> new NotFoundException("Customer not found"));
 
-    customerRepository.save(currentCustomer);
+    currentCustomer.setCompanyCode(customerUpdate.getCompanyCode());
+    currentCustomer.setCompanyName(customerUpdate.getCompanyName());
+    currentCustomer.setName(customerUpdate.getName());
+    currentCustomer.setSurname(customerUpdate.getSurname());
+    currentCustomer.setPersonalCode(customerUpdate.getPersonalCode());
+
+    customerRepository.saveAndFlush(currentCustomer);
   }
 
-  public void addAccount(Long id, Account account) {
-    Customer customer = customerRepository.findById(id).get();
+  @Transactional
+  public void addAccount(Long id, AccountCreate accountCreate) {
+    Customer customer = customerRepository.findById(id).orElseThrow(
+        () -> new NotFoundException("Customer not found"));
+
+    Account account = Account.builder()
+        .description(accountCreate.getDescription())
+        .name(accountCreate.getName())
+        .customer(customer)
+        .build();
+
     customer.getCustomerAccounts().add(account);
-    customerRepository.save(customer);
+
+    customerRepository.saveAndFlush(customer);
   }
+
 
   public void deleteAccount(Long id, Long accountId) {
 
-    Account account = accountRepository.findById(accountId).get();
+    Customer customer = customerRepository.findById(id).orElseThrow(
+        () -> new NotFoundException("Customer not found"));
 
-    Customer customer = customerRepository.findById(id).get();
+    Account account = accountRepository.findById(accountId).orElseThrow(
+        () -> new NotFoundException("Account not found"));
 
-    if(customer.getCustomerAccounts().contains(account)) {
-      accountRepository.delete(account);
+    if (customer.getCustomerAccounts().contains(account)) {
+      accountRepository.deleteById(accountId);
     }
 
   }
@@ -63,17 +108,4 @@ public class CustomerService {
     customerRepository.deleteById(id);
   }
 
-  @Autowired
-  public void setCustomerRepository(CustomerRepository customerRepository) {
-    this.customerRepository = customerRepository;
-  }
-
-  public AccountRepository getAccountRepository() {
-    return accountRepository;
-  }
-
-  @Autowired
-  public void setAccountRepository(AccountRepository accountRepository) {
-    this.accountRepository = accountRepository;
-  }
 }

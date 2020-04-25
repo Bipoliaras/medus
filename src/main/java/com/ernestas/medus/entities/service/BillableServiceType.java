@@ -1,6 +1,6 @@
-package com.ernestas.medus.entities;
+package com.ernestas.medus.entities.service;
 
-public enum ServiceType {
+public enum BillableServiceType {
   TELEVISION,
   MOBILE_INTERNET,
   HOME_INTERNET,

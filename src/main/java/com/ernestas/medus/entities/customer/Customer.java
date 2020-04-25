@@ -1,5 +1,6 @@
-package com.ernestas.medus.entities;
+package com.ernestas.medus.entities.customer;
 
+import com.ernestas.medus.entities.account.Account;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -33,8 +34,8 @@ public class Customer {
   @NotNull @Size(min = 3, max = 20)
   private String surname;
 
-  @NotNull
-  private Long personalCode;
+  @NotNull @Size(min = 11, max = 11)
+  private String personalCode;
 
   private String companyName;
 

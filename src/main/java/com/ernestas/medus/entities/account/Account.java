@@ -1,5 +1,7 @@
-package com.ernestas.medus.entities;
+package com.ernestas.medus.entities.account;
 
+import com.ernestas.medus.entities.customer.Customer;
+import com.ernestas.medus.entities.phonenumber.PhoneNumber;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,8 +40,10 @@ public class Account {
   @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
   private List<PhoneNumber> phoneNumbers = new ArrayList<>();
 
+  @NotNull @Size(min = 10, max = 20)
   private String name;
-  private String serviceType;
+
+  @NotNull @Size(min = 16, max = 120)
   private String description;
 
 }
