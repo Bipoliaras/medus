@@ -2,7 +2,9 @@ package com.ernestas.medus.services;
 
 import com.ernestas.medus.entities.orderedservice.OrderedServiceRepository;
 import com.ernestas.medus.entities.service.BillableService;
+import com.ernestas.medus.entities.service.BillableServiceCreate;
 import com.ernestas.medus.entities.service.BillableServiceRepository;
+import com.ernestas.medus.entities.service.BillableServiceUpdate;
 import com.ernestas.medus.error.BadRequestException;
 import com.ernestas.medus.error.NotFoundException;
 import java.util.List;
@@ -29,19 +31,25 @@ public class BillableServiceService {
   }
 
   @Transactional
-  public void createBillableService(BillableService billableService) {
-    billableServiceRepository.saveAndFlush(billableService);
+  public void createBillableService(BillableServiceCreate billableServiceCreate) {
+    billableServiceRepository.saveAndFlush(
+        BillableService.builder()
+            .name(billableServiceCreate.getName())
+            .billableServiceType(billableServiceCreate.getBillableServiceType())
+            .description(billableServiceCreate.getDescription())
+            .build()
+    );
   }
 
-  public void updateBillableService(Long serviceId, BillableService billableService) {
+  public void updateBillableService(Long serviceId, BillableServiceUpdate billableServiceUpdate) {
 
     BillableService currentService = billableServiceRepository.findById(serviceId)
         .orElseThrow(() -> new NotFoundException("Billable service not found"));
 
     if (orderedServiceRepository.findAllByBillableService_Id(serviceId).isEmpty()) {
-      currentService.setName(billableService.getName());
-      currentService.setDescription(billableService.getDescription());
-      currentService.setBillableServiceType(billableService.getBillableServiceType());
+      currentService.setName(billableServiceUpdate.getName());
+      currentService.setDescription(billableServiceUpdate.getDescription());
+      currentService.setBillableServiceType(billableServiceUpdate.getBillableServiceType());
       billableServiceRepository.saveAndFlush(currentService);
     } else {
       throw new BadRequestException("Service cannot be updated if it is currently ordered");

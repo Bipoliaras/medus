@@ -39,6 +39,9 @@ public class PhoneNumber {
   @NotNull
   private LocalDateTime activeTo;
 
+  @NotNull
+  private String phoneDigits;
+
   @ManyToOne
   @JoinColumn(name="account_id", nullable=false)
   @JsonIgnore

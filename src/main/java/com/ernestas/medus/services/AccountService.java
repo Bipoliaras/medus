@@ -59,6 +59,7 @@ public class AccountService {
         .account(account)
         .activeFrom(phoneNumberCreate.getActiveFrom())
         .activeTo(phoneNumberCreate.getActiveTo())
+        .phoneDigits(phoneNumberCreate.getPhoneDigits())
         .build();
 
     account.getPhoneNumbers().add(phoneNumber);

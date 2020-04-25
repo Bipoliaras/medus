@@ -2,9 +2,9 @@ package com.ernestas.medus.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.ernestas.medus.entities.account.Account;
 import com.ernestas.medus.entities.account.AccountRepository;
-import com.ernestas.medus.entities.phonenumber.PhoneNumber;
+import com.ernestas.medus.entities.account.AccountUpdate;
+import com.ernestas.medus.entities.phonenumber.PhoneNumberCreate;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.time.Duration;
@@ -45,7 +45,7 @@ public class AccountControllerIT extends ITBase {
     RestAssured.given()
         .accept(ContentType.JSON)
         .contentType(ContentType.JSON)
-        .body(Account.builder()
+        .body(AccountUpdate.builder()
             .description("Upgraded account for Ernestas")
             .name("More flexible")
             .build())
@@ -65,9 +65,10 @@ public class AccountControllerIT extends ITBase {
     RestAssured.given()
         .accept(ContentType.JSON)
         .contentType(ContentType.JSON)
-        .body(PhoneNumber.builder()
+        .body(PhoneNumberCreate.builder()
             .activeTo(LocalDateTime.now().plus(Duration.ofDays(20)))
             .activeFrom(LocalDateTime.now())
+            .phoneDigits("+37061432579")
             .build()
         )
         .post("http://localhost:9001/accounts/3/phone-numbers")

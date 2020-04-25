@@ -1,6 +1,8 @@
 package com.ernestas.medus.api;
 
 import com.ernestas.medus.entities.service.BillableService;
+import com.ernestas.medus.entities.service.BillableServiceCreate;
+import com.ernestas.medus.entities.service.BillableServiceUpdate;
 import com.ernestas.medus.services.BillableServiceService;
 import java.util.List;
 import javax.validation.Valid;
@@ -40,8 +42,8 @@ public class BillableServiceController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public void createBillableService(@Valid @RequestBody BillableService billableService) {
-    billableServiceService.createBillableService(billableService);
+  public void createBillableService(@Valid @RequestBody BillableServiceCreate billableServiceCreate) {
+    billableServiceService.createBillableService(billableServiceCreate);
   }
 
   @DeleteMapping("/{billableServiceId}")
@@ -51,8 +53,8 @@ public class BillableServiceController {
 
   @PutMapping("/{billableServiceId}")
   public void updateService(@PathVariable("billableServiceId") Long billableServiceId,
-      @Valid @RequestBody BillableService billableService) {
-    billableServiceService.updateBillableService(billableServiceId, billableService);
+      @Valid @RequestBody BillableServiceUpdate billableServiceUpdate) {
+    billableServiceService.updateBillableService(billableServiceId, billableServiceUpdate);
   }
 
 

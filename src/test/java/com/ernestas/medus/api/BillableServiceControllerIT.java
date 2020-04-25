@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import com.ernestas.medus.entities.service.BillableService;
+import com.ernestas.medus.entities.service.BillableServiceCreate;
 import com.ernestas.medus.entities.service.BillableServiceRepository;
 import com.ernestas.medus.entities.service.BillableServiceType;
+import com.ernestas.medus.entities.service.BillableServiceUpdate;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.Test;
@@ -62,7 +64,7 @@ public class BillableServiceControllerIT extends ITBase {
     RestAssured.given()
         .accept(ContentType.JSON)
         .contentType(ContentType.JSON)
-        .body(BillableService.builder().name("New service")
+        .body(BillableServiceCreate.builder().name("New service")
             .description("Even better internet for your excellent service")
             .billableServiceType(BillableServiceType.HOME_INTERNET)
             .build())
@@ -105,7 +107,7 @@ public class BillableServiceControllerIT extends ITBase {
         .accept(ContentType.JSON)
         .contentType(ContentType.JSON)
         .body(
-            BillableService.builder()
+            BillableServiceUpdate.builder()
                 .description(billableService.getDescription())
                 .billableServiceType(billableService.getBillableServiceType())
                 .name("Excellent new name")

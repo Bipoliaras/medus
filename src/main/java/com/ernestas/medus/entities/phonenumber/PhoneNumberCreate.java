@@ -20,4 +20,7 @@ public class PhoneNumberCreate {
   @NotNull
   private LocalDateTime activeTo;
 
+  @NotNull
+  private String phoneDigits;
+
 }

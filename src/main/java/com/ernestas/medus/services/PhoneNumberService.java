@@ -3,6 +3,7 @@ package com.ernestas.medus.services;
 import com.ernestas.medus.entities.orderedservice.OrderedService;
 import com.ernestas.medus.entities.orderedservice.OrderedServiceCreate;
 import com.ernestas.medus.entities.orderedservice.OrderedServiceRepository;
+import com.ernestas.medus.entities.orderedservice.OrderedServiceUpdate;
 import com.ernestas.medus.entities.phonenumber.PhoneNumber;
 import com.ernestas.medus.entities.phonenumber.PhoneNumberRepository;
 import com.ernestas.medus.entities.service.BillableService;
@@ -31,7 +32,6 @@ public class PhoneNumberService {
     this.billableServiceRepository = billableServiceRepository;
     this.orderedServiceRepository = orderedServiceRepository;
   }
-
 
   @Transactional
   public void orderServiceForNumber(Long phoneNumberId, Long serviceId,
@@ -76,6 +76,30 @@ public class PhoneNumberService {
     phoneNumber.getOrderedServiceList().remove(orderedService);
 
     phoneNumberRepository.saveAndFlush(phoneNumber);
+  }
+
+  public void updateServiceForNumber(Long phoneNumberId, Long orderedServiceId,
+      OrderedServiceUpdate orderedServiceUpdate) {
+
+    PhoneNumber phoneNumber = phoneNumberRepository.findById(phoneNumberId).orElseThrow(
+        () -> new NotFoundException("Phone number not found"));
+
+    OrderedService orderedService = orderedServiceRepository.findById(orderedServiceId).orElseThrow(
+        () -> new NotFoundException("Ordered service not found"));
+
+    if (orderedServiceUpdate.getActiveFrom().isAfter(orderedServiceUpdate.getActiveTo())) {
+      throw new BadRequestException("Service active from date cannot be after active to date");
+    }
+
+    if (orderedServiceUpdate.getActiveFrom().equals(orderedServiceUpdate.getActiveTo())) {
+      throw new BadRequestException("Service order dates cannot be equal");
+    }
+
+    orderedService.setActiveTo(orderedServiceUpdate.getActiveTo());
+    orderedService.setActiveFrom(orderedServiceUpdate.getActiveFrom());
+    orderedService.setName(orderedServiceUpdate.getName());
+
+    orderedServiceRepository.saveAndFlush(orderedService);
   }
 
 

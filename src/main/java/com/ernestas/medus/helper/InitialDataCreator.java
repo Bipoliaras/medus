@@ -63,12 +63,14 @@ public class InitialDataCreator {
         .activeTo(LocalDateTime.now().plus(Duration.ofDays(20)))
         .account(account)
         .orderedServiceList(new ArrayList<>())
+        .phoneDigits("+37061432575")
         .build();
 
     PhoneNumber secondPhoneNumber = PhoneNumber.builder()
         .activeFrom(LocalDateTime.now())
         .activeTo(LocalDateTime.now().plus(Duration.ofDays(20)))
         .account(account)
+        .phoneDigits("+37061432579")
         .orderedServiceList(new ArrayList<>())
         .build();
 
@@ -76,6 +78,7 @@ public class InitialDataCreator {
         .activeFrom(LocalDateTime.now())
         .activeTo(LocalDateTime.now().plus(Duration.ofDays(20)))
         .account(account)
+        .phoneDigits("+37061432578")
         .orderedServiceList(new ArrayList<>())
         .build();
 

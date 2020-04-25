@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 
 import com.ernestas.medus.entities.account.Account;
 import com.ernestas.medus.entities.customer.Customer;
+import com.ernestas.medus.entities.customer.CustomerCreate;
 import com.ernestas.medus.entities.customer.CustomerRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -152,13 +153,12 @@ public class CustomerControllerIT extends ITBase {
   public void whenCreateCustomerOk() {
     RestAssured.given()
         .body(
-            Customer.builder()
+            CustomerCreate.builder()
                 .companyCode("Zenitech")
                 .companyName("Zenitech")
                 .personalCode("35712038328")
                 .name("Ernestas")
                 .surname("Seminogovas")
-                .customerAccounts(new ArrayList<>())
                 .build()
         )
         .accept(ContentType.JSON)
